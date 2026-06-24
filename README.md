@@ -89,3 +89,18 @@ It is a design pattern where an object receives its required dependencies from a
 | GET    | /api/categories/{id}      | -            |
 | PUT    | /api/categories/{id}      | { "name" }   |
 | DELETE | /api/categories/{id}      | -            |
+
+## API Response Format
+Every endpoint in this application returns a standardized `Response<T>` wrapper.
+
+**Example Response:**
+```json
+{
+  "statusCode": 200,
+  "message": "Category retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Burgers"
+  },
+  "timestamp": "2026-06-18T08:42:11.123"
+}
