@@ -29,6 +29,17 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateRefreshToken(String email) {
+        // 7 days expiration for refresh token
+        int refreshExpirationMs = 604800000;
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date()).getTime() + refreshExpirationMs))
+                .signWith(key())
+                .compact();
+    }
+
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }

@@ -8,6 +8,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthResponse {
     private String token;
+    private String refreshToken; // <-- Added this
     private String email;
     private String name;
     private List<String> roles;
