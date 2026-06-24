@@ -1,17 +1,21 @@
 package food_ordering_system.controller;
 
+import food_ordering_system.dto.CategoryDto;
 import food_ordering_system.dto.MenuDto;
 import food_ordering_system.response.Response;
 import food_ordering_system.service.MenuService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/menu")
 @RequiredArgsConstructor
+@Validated
 public class MenuController {
 
     private final MenuService menuService;
@@ -21,13 +25,12 @@ public class MenuController {
         return ResponseEntity.ok(menuService.createMenu(dto));
     }
 
-    // Upgraded for Week 2: Handles ?search=... &page=... &categoryId=...
     @GetMapping
     public ResponseEntity<Response<Page<MenuDto>>> all(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "10") @Min(value = 1, message = "Page size must be at least 1") int size,
             @RequestParam(defaultValue = "id,asc") String sort
     ) {
         return ResponseEntity.ok(menuService.getAllMenus(categoryId, search, page, size, sort));
@@ -38,17 +41,18 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getMenuById(id));
     }
 
-    // Added for Week 2: Update Menu
     @PutMapping("/{id}")
-    public ResponseEntity<Response<MenuDto>> update(
-            @PathVariable Long id,
-            @RequestBody @Valid MenuDto dto) {
+    public ResponseEntity<Response<MenuDto>> update(@PathVariable Long id, @RequestBody @Valid MenuDto dto) {
         return ResponseEntity.ok(menuService.updateMenu(id, dto));
     }
 
-    // Added for Week 2: Delete Menu
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> delete(@PathVariable Long id) {
         return ResponseEntity.ok(menuService.deleteMenu(id));
+    }
+
+    @GetMapping("/{id}/category")
+    public ResponseEntity<Response<CategoryDto>> getMenuCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(menuService.getMenuCategory(id));
     }
 }
